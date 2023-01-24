@@ -1,11 +1,12 @@
 
-# Assigment 
+# Assignment 
 
 ## tasks
 
 1.  ~~obtener f_validator_keys~~
-2.  obtener fee_recipient
-3.  Almacenar el mapping fee_recipient/pubkey/timestampt en una tabla nueva. t_mapping_feerecekmdasd.
+2.  ~~obtener fee_recipient~~
+3.  ~~obtener un txt con los pubkeys - fee_recipient~~
+4.  Almacenar el mapping fee_recipient/pubkey/timestampt en una tabla nueva. t_mapping_feerecekmdasd.
 
 
 ## Run locally

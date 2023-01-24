@@ -22,7 +22,7 @@ type Data struct {
 
 func getFeeRecipient(pubkey string) string {
 
-	req, err := http.NewRequest("GET", "https://0xac6e77dfe25ecd6110b8e780608cce0dab71fdd5ebea22a16c0205200f2f8e2e3ad3b71d3499c54ad14d6c21b41a37ae@boost-relay.flashbots.net/relay/v1/data/validator_registration?pubkey="+pubkey, nil)
+	req, err := http.NewRequest("GET", "https://boost-relay-goerli.flashbots.net/relay/v1/data/validator_registration?pubkey="+pubkey, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +46,7 @@ func getFeeRecipient(pubkey string) string {
 
 	// no fee recipient found
 	if data.Message.FeeRecipient == "" {
-		return "Nil"
+		return ""
 	}
 
 	return data.Message.FeeRecipient
@@ -61,7 +61,7 @@ func main() {
 	}
 
 	rows, err := conn.Query(context.Background(),
-		"select f_validator_key from t_oracle_validator_balances limit 100")
+		"select f_validator_key from t_oracle_validator_balances limit 200")
 
 	if err != nil {
 		panic(err)
@@ -83,7 +83,7 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			file.WriteString("\n" + pubkey + "\t" + fee_recipient)
+			file.WriteString(pubkey + "\t" + fee_recipient + "\n")
 			fmt.Println("Done")
 		}
 
