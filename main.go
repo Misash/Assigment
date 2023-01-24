@@ -2,55 +2,12 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/jackc/pgx/v4"
-	"io/ioutil"
-	"net/http"
 	"os"
 )
 
-type Data struct {
-	Message struct {
-		FeeRecipient string `json:"fee_recipient"`
-		GasLimit     string `json:"gas_limit"`
-		Timestamp    string `json:"timestamp"`
-		PubKey       string `json:"pubkey"`
-	}
-	Signature string `json:"signature"`
-}
 
-func getFeeRecipient(pubkey string) string {
-
-	req, err := http.NewRequest("GET", "https://boost-relay-goerli.flashbots.net/relay/v1/data/validator_registration?pubkey="+pubkey, nil)
-	if err != nil {
-		panic(err)
-	}
-	req.Header.Set("Accept", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	defer resp.Body.Close()
-
-	bodyText, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-
-	// get data from Json
-	data := Data{}
-	json.Unmarshal(bodyText, &data)
-
-	// no fee recipient found
-	if data.Message.FeeRecipient == "" {
-		return ""
-	}
-
-	return data.Message.FeeRecipient
-}
 
 func main() {
 
@@ -61,7 +18,7 @@ func main() {
 	}
 
 	rows, err := conn.Query(context.Background(),
-		"select f_validator_key from t_oracle_validator_balances limit 200")
+		"select f_validator_key from t_oracle_validator_balances limit 100")
 
 	if err != nil {
 		panic(err)
@@ -70,20 +27,29 @@ func main() {
 	// create txt
 	file, err := os.Create("pubkey_FeeRecipient.txt")
 
-    // write data 
+
 	for rows.Next() {
+
 		var pubkey string
 		err = rows.Scan(&pubkey)
 		if err != nil {
 			panic(err)
 		}
-
-		fee_recipient := getFeeRecipient(pubkey)
-		// fmt.Println(pubkey)
+		data := getData(pubkey)
+		
 		if err != nil {
 			fmt.Println(err)
-		} else {
-			file.WriteString(pubkey + "\t" + fee_recipient + "\n")
+		} else
+		{
+			//write to txt
+			file.WriteString(pubkey + "\t" + data.Message.FeeRecipient + "\n")
+
+			//insert to DB 
+			// if data.Message.FeeRecipient != "" {
+			// 	insertDataMyDB(pubkey,data.Message.FeeRecipient,data.Message.Timestamp)
+			// 	fmt.Println("insert!!")
+			// }
+
 			fmt.Println("Done")
 		}
 
