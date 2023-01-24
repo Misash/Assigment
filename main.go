@@ -7,6 +7,8 @@ import (
     "github.com/jackc/pgx/v4"
 )
 
+
+
 func main() {
 
     conn, err := pgx.Connect(context.Background(), "postgres://xxx:yyy@157.90.93.245:5432")
@@ -17,8 +19,9 @@ func main() {
 
 
     rows , err := conn.Query(context.Background(),
-        // "select f_validator_key from t_oracle_validator_balances order by f_validator_key desc ").Scan(&depositAddress)
-		"select f_validator_key from t_oracle_validator_balances limit 10")
+		"select f_validator_key from t_oracle_validator_balances limit 5")
+		// "select encode(f_eth1_sender, 'hex') from t_eth1_deposits limit 5")
+		
 
 	
     if err != nil {
@@ -36,5 +39,8 @@ func main() {
 
 
     // fmt.Println(rows)
+
+
+
 
 }
