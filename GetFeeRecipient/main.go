@@ -1,29 +1,26 @@
 package main
 
-
-import(
+import (
 	"fmt"
 )
 
-func GetUniqueFeeRecipients( FeeRecipients []string) []string {
+func GetUniqueFeeRecipients(FeeRecipients []string) []string {
 
-	key := make(map[string] bool)
+	key := make(map[string]bool)
 	uniqueFeeRecipients := []string{}
 
-	for _, fee_recipient := range FeeRecipients{
-		
+	for _, fee_recipient := range FeeRecipients {
+
 		if !key[fee_recipient] {
 			key[fee_recipient] = true
-			// fmt.Println(fee_recipient)
-			uniqueFeeRecipients = append(uniqueFeeRecipients,fee_recipient)
+			uniqueFeeRecipients = append(uniqueFeeRecipients, fee_recipient)
 		}
 	}
 
 	return uniqueFeeRecipients
 }
 
-
-func main(){
+func main() {
 
 	data := []string{
 		"0x455e5aa18469bc6ccef49594645666c587a3571b",
@@ -41,9 +38,12 @@ func main(){
 		"0x005CD1608e40d1e775a97d12e4f594029567C071",
 		"0x455e5aa18469bc6ccef49594645666c587a3571b",
 		"0x005CD1608e40d1e775a97d12e4f594029567C071",
-		}
+	}
 
+	FeeRecipients := GetUniqueFeeRecipients(data)
 
+	for _, fee_recipient := range FeeRecipients {
+		fmt.Println(fee_recipient)
+	}
 
-	fmt.Println(GetUniqueFeeRecipients(data))
 }
